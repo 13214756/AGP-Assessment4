@@ -6,6 +6,7 @@
 #include "FirstPersonAnimInstance.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -13,11 +14,13 @@ APlayerCharacter::APlayerCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	AutoPossessPlayer = EAutoReceiveInput::Player0;
 
 	//Set default member variable values
 	LookSensitivity = 1.0f;
 	SprintMultiplier = 1.5f;
+
+	SprintMovementSpeed = GetCharacterMovement()->MaxWalkSpeed * SprintMultiplier;
+	NormalMovementSpeed = GetCharacterMovement()->MaxWalkSpeed;
 
 	SpeedPercentage = 1.0f;
 	bSpeedBoost = false;
@@ -136,12 +139,15 @@ void APlayerCharacter::LookUp(float Value)
 	*/
 	FRotator LookUpRotation = FRotator::ZeroRotator;
 	LookUpRotation.Pitch = Value * LookSensitivity;
-	if (Camera->RelativeRotation.Pitch + LookUpRotation.Pitch < 90.0f
-		&& Camera->RelativeRotation.Pitch + LookUpRotation.Pitch > -90.0f)
+	if (Camera)
 	{
-		Camera->AddRelativeRotation(LookUpRotation);
-		Camera->RelativeRotation.Yaw = 0.0f;
-		Camera->RelativeRotation.Roll = 0.0f;
+		if (Camera->RelativeRotation.Pitch + LookUpRotation.Pitch < 90.0f
+			&& Camera->RelativeRotation.Pitch + LookUpRotation.Pitch > -90.0f)
+		{
+			Camera->AddRelativeRotation(LookUpRotation);
+			Camera->RelativeRotation.Yaw = 0.0f;
+			Camera->RelativeRotation.Roll = 0.0f;
+		}
 	}
 }
 
@@ -152,7 +158,9 @@ void APlayerCharacter::Turn(float Value)
 
 void APlayerCharacter::SprintStart()
 {
-	GetCharacterMovement()->MaxWalkSpeed *= SprintMultiplier;
+	GetCharacterMovement()->MaxWalkSpeed = SprintMovementSpeed;
+
+	ServerSprintStart();
 
 	if (AnimInstance)
 	{
@@ -162,12 +170,24 @@ void APlayerCharacter::SprintStart()
 
 void APlayerCharacter::SprintEnd()
 {
-	GetCharacterMovement()->MaxWalkSpeed /= SprintMultiplier;
+	GetCharacterMovement()->MaxWalkSpeed = NormalMovementSpeed;
+
+	ServerSprintEnd();
 
 	if (AnimInstance)
 	{
 		AnimInstance->bIsSprinting = false;
 	}
+}
+
+void APlayerCharacter::ServerSprintStart_Implementation()
+{
+	GetCharacterMovement()->MaxWalkSpeed = SprintMovementSpeed;
+}
+
+void APlayerCharacter::ServerSprintEnd_Implementation()
+{
+	GetCharacterMovement()->MaxWalkSpeed = NormalMovementSpeed;
 }
 
 void APlayerCharacter::Reload()
