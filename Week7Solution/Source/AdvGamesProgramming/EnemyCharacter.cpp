@@ -11,7 +11,7 @@
 // Sets default values
 AEnemyCharacter::AEnemyCharacter()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	CurrentAgentState = AgentState::PATROL;
@@ -22,7 +22,7 @@ AEnemyCharacter::AEnemyCharacter()
 void AEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	Cast<UCharacterMovementComponent>(GetMovementComponent())->bOrientRotationToMovement = true;
 
 	HealthComponent = FindComponentByClass<UHealthComponent>();
@@ -50,7 +50,7 @@ void AEnemyCharacter::Tick(float DeltaTime)
 		{
 			CurrentAgentState = AgentState::ENGAGE;
 			Path.Empty();
-		} 
+		}
 		else if (bCanSeeActor && HealthComponent->HealthPercentageRemaining() < 40.0f)
 		{
 			CurrentAgentState = AgentState::EVADE;
@@ -138,13 +138,13 @@ void AEnemyCharacter::SensePlayer(AActor* ActorSensed, FAIStimulus Stimulus)
 	if (Stimulus.WasSuccessfullySensed())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Player Detected"))
-		DetectedActor = ActorSensed;
+			DetectedActor = ActorSensed;
 		bCanSeeActor = true;
 	}
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Player Lost"))
-		bCanSeeActor = false;
+			bCanSeeActor = false;
 	}
 }
 

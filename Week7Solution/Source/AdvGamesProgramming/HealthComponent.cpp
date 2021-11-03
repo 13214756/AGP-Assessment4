@@ -44,6 +44,13 @@ void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 	}
 }
 
+void UHealthComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(UHealthComponent, CurrentHealth);
+}
+
 void UHealthComponent::OnTakeDamage(float Damage)
 {
 	CurrentHealth -= (DmgPercentTaken * Damage);
@@ -62,6 +69,18 @@ void UHealthComponent::OnDeath()
 float UHealthComponent::HealthPercentageRemaining()
 {
 	return CurrentHealth/MaxHealth * 100.0f;
+}
+
+void UHealthComponent::UpdateHealthBar()
+{
+	if (GetOwner()->GetLocalRole() == ROLE_AutonomousProxy || (GetOwner()->GetLocalRole() == ROLE_Authority && Cast<APawn>(GetOwner())->IsLocallyControlled()))
+	{
+		APlayerHUD* PlayerHUD = Cast<APlayerHUD>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD());
+		if (IsValid(PlayerHUD))
+		{
+			PlayerHUD->SetPlayerHealthBarPercent(CurrentHealth / MaxHealth);
+		}
+	}
 }
 
 void UHealthComponent::Heal(float Health)

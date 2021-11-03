@@ -16,6 +16,10 @@ public:
 	// Sets default values for this component's properties
 	UHealthComponent();
 
+private:
+	UFUNCTION()
+		void UpdateHealthBar();
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -24,11 +28,13 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
 	float MaxHealth;
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(ReplicatedUsing = UpdateHealthBar, BlueprintReadOnly)
 	float CurrentHealth;
 
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 	
 	UFUNCTION(BlueprintCallable)
 	void OnTakeDamage(float Damage);
