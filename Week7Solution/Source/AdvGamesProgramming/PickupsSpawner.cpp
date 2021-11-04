@@ -48,6 +48,10 @@ APickupsSpawner::APickupsSpawner()
 	SpawnTime = 0.1f;
 	LockTimer = 30.0f;
 	bBoxUnlocked = false;
+
+	BoosterSpawner = nullptr;
+	WeaponSpawner = nullptr;
+
 }
 
 // Called when the game starts or when spawned
@@ -71,6 +75,25 @@ void APickupsSpawner::Tick(float DeltaTime)
 		LockTimer -= DeltaTime;
 		if (LockTimer <= 0.0f)
 		{
+			if (!bBoxUnlocked)
+			{
+				if (PickupInt == 1)
+				{
+					//BoosterSpawnRef->BoxOpen();
+					if (BoosterSpawner)
+					{
+						BoosterSpawner->BoxOpen();
+					}
+				}
+				else
+				{
+					//WeaponSpawnRef->BoxOpen();
+					if (WeaponSpawner)
+					{
+						WeaponSpawner->BoxOpen();
+					}
+				}
+			}
 			bBoxUnlocked = true;
 			LootBox->SetMaterial(0, UnlockedMaterial);
 		}
@@ -125,7 +148,9 @@ void APickupsSpawner::SpawnBoostSpawner()
 	{
 		FActorSpawnParameters BoostSpawnParams;
 
-		ABoostSpawner* BoosterSpawnerRef = GetWorld()->SpawnActor<ABoostSpawner>(BoostSpawnerBP, GetTransform(), BoostSpawnParams);
+		ABoostSpawner* BoosterSpawnerRef = GetWorld()->SpawnActor<ABoostSpawner>(BoostSpawnerBP, GetTransform(), FActorSpawnParameters());
+		BoosterSpawnerRef->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
+		BoosterSpawner = BoosterSpawnerRef;
 
 		UE_LOG(LogTemp, Warning, TEXT("Boost spawner spawned"));
 	}
@@ -137,7 +162,9 @@ void APickupsSpawner::SpawnWeaponSpawner()
 	{
 		FActorSpawnParameters WeaponSpawnParams;
 
-		AWeaponSpawner* WeaponSpawnerRef = GetWorld()->SpawnActor<AWeaponSpawner>(WeaponSpawnerBP, GetTransform(), WeaponSpawnParams);
+		AWeaponSpawner* WeaponSpawnerRef = GetWorld()->SpawnActor<AWeaponSpawner>(WeaponSpawnerBP, GetTransform(), FActorSpawnParameters());
+		WeaponSpawnerRef->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
+		WeaponSpawner = WeaponSpawnerRef;
 
 		UE_LOG(LogTemp, Warning, TEXT("Weapon spawner spawned"));
 	}
@@ -151,4 +178,20 @@ void APickupsSpawner::HideSpawner()
 		SetActorEnableCollision(false);
 		SetActorTickEnabled(false);
 	}
+}
+
+void APickupsSpawner::ResetSpawner()
+{
+
+	SetActorHiddenInGame(false);
+	SetActorEnableCollision(true);
+	SetActorTickEnabled(true);
+
+	PickupInt = FMath::RandRange(1, 2);
+	LootBox->SetMaterial(0, LockedMaterial);
+	//SpawnPickup();
+	//LockTimer = 30.0f;
+	//bBoxUnlocked = false;
+
+	UE_LOG(LogTemp, Warning, TEXT("ResetSpawner() has run"));
 }

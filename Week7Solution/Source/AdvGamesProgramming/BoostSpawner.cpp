@@ -1,10 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
+#include "BoostSpawner.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "HealthComponent.h"
 #include "PlayerCharacter.h"
-#include "BoostSpawner.h"
+#include "Net/UnrealNetwork.h"
 
 
 
@@ -200,6 +201,17 @@ void ABoostSpawner::OnGenerate()
 	}
 
 	//UE_LOG(LogTemp, Warning, TEXT("OnGenerate has run"));
+}
+
+void ABoostSpawner::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ABoostSpawner, Type);
+	DOREPLIFETIME(ABoostSpawner, Health);
+	DOREPLIFETIME(ABoostSpawner, Attack);
+	DOREPLIFETIME(ABoostSpawner, Defence);
+	DOREPLIFETIME(ABoostSpawner, Speed);
 }
 
 /*

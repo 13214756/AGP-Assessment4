@@ -61,4 +61,9 @@ public:
 	void SpawnPickup();
 	void HideSpawner();
 
+	class ABoostSpawner* BoosterSpawner;
+	class AWeaponSpawner* WeaponSpawner;
+
+	void ResetSpawner();
+
 };

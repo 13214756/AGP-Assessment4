@@ -7,6 +7,10 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Net/UnrealNetwork.h"
+#include "HealthComponent.h"
+#include "MultiplayerGameMode.h"
+#include "Engine/World.h"
+#include "GameFramework/HUD.h"
 
 
 // Sets default values
@@ -251,3 +255,4 @@ void APlayerCharacter::OnEndOverlap(UPrimitiveComponent * OverlappedComponent, A
 		UE_LOG(LogTemp, Warning, TEXT("No longer colliding with spawner"));
 	//}
 }
+

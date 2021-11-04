@@ -2,6 +2,7 @@
 
 
 #include "WeaponSpawner.h"
+#include "Net/UnrealNetwork.h"
 
 
 
@@ -80,6 +81,18 @@ void AWeaponSpawner::OnGenerate()
 	MagazineSize = (RandBoolArray[2] ? FMath::RandRange(20, 100) : FMath::RandRange(1, 20));
 	WeaponAccuracy = (RandBoolArray[3] ? FMath::RandRange(0.95f, 1.0f) : FMath::RandRange(0.8f, 0.95f));
 }
+
+void AWeaponSpawner::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AWeaponSpawner, Rarity);
+	DOREPLIFETIME(AWeaponSpawner, BulletDamage);
+	DOREPLIFETIME(AWeaponSpawner, MuzzleVelocity);
+	DOREPLIFETIME(AWeaponSpawner, MagazineSize);
+	DOREPLIFETIME(AWeaponSpawner, WeaponAccuracy);
+}
+
 
 void AWeaponSpawner::GenerateRandomBoolArray(int32 ArrayLength, int32 NumTrue, TArray<bool>& RandBoolArray)
 {

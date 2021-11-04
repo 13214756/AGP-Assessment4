@@ -41,13 +41,13 @@ public:
 
 	//void BoxOpen() override;
 
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+	UPROPERTY(Replicated, BlueprintReadOnly, VisibleAnywhere)
 	float Health;
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+	UPROPERTY(Replicated, BlueprintReadOnly, VisibleAnywhere)
 	float Attack;
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+	UPROPERTY(Replicated, BlueprintReadOnly, VisibleAnywhere)
 	float Defence;
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+	UPROPERTY(Replicated, BlueprintReadOnly, VisibleAnywhere)
 	float Speed;
 	/*
 	UFUNCTION(BlueprintImplementableEvent)
@@ -64,10 +64,12 @@ public:
 	class UHealthComponent* PickedUpHealthComponent;
 	class APlayerCharacter* PickedUpPlayerCharacter;
 	*/
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(Replicated, BlueprintReadOnly)
 		EBoostPickupType Type;
 
 	EBoostPickupRarity Rarity;
+
+	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	int32 Rand;
 	int32 RandItem;

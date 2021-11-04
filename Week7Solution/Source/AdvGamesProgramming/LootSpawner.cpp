@@ -2,8 +2,8 @@
 
 
 #include "LootSpawner.h"
-#include "PickupsSpawner.h"
 #include "Components/BoxComponent.h"
+#include "PickupsSpawner.h"
 
 // Sets default values
 ALootSpawner::ALootSpawner()
@@ -24,6 +24,8 @@ ALootSpawner::ALootSpawner()
 
 	bBoxClosed = true;
 	TimeTillAutoDestroy = 30.0f;
+
+	AssociatedSpawner = nullptr;
 }
 
 // Called when the game starts or when spawned
@@ -74,6 +76,13 @@ void ALootSpawner::BoxOpen()
 void ALootSpawner::SpawnNewPickup()
 {
 	//GetWorld()->SpawnActor<APickupsSpawner>(SpawnLocation, SpawnRotation, SpawnInfo);
+	UE_LOG(LogTemp, Warning, TEXT("SpawnNewPickup() running"));
+	AssociatedSpawner = Cast<APickupsSpawner>(GetAttachParentActor());
+	if (AssociatedSpawner)
+	{
+		AssociatedSpawner->ResetSpawner();
+		UE_LOG(LogTemp, Warning, TEXT("Found AssociatedSpawner"));
+	}
 }
 
 void ALootSpawner::DestroySelf()

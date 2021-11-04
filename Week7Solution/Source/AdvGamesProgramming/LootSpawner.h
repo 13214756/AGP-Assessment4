@@ -1,5 +1,4 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -10,7 +9,7 @@ UCLASS()
 class ADVGAMESPROGRAMMING_API ALootSpawner : public AActor
 {
 	GENERATED_BODY()
-	
+
 public:	
 	// Sets default values for this actor's properties
 	ALootSpawner();
@@ -45,4 +44,6 @@ public:
 	void SpawnNewPickup();
 	virtual void BoxOpen();
 	void DestroySelf();
+
+	class APickupsSpawner* AssociatedSpawner;
 };
