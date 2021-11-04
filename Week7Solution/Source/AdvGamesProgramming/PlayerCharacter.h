@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "Camera/CameraComponent.h"
 #include "PickupsSpawner.h"
+#include "HealthComponent.h"
 #include "PlayerCharacter.generated.h"
 
 UCLASS()
@@ -30,6 +31,8 @@ public:
 	float LookSensitivity;
 	UPROPERTY(EditInstanceOnly)
 	float SprintMultiplier;
+
+	UHealthComponent* HealthComponent;
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

@@ -8,6 +8,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Net/UnrealNetwork.h"
 
+
 // Sets default values
 APlayerCharacter::APlayerCharacter()
 {
@@ -30,7 +31,7 @@ APlayerCharacter::APlayerCharacter()
 	CollidedSpawner = nullptr;
 
 	CapsuleCollider = GetCapsuleComponent();
-	//CapsuleCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("Capsule Collider"));
+	// CapsuleCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("Capsule Collider"));
 	CapsuleCollider->AttachTo(RootComponent);
 	CapsuleCollider->SetGenerateOverlapEvents(true);
 	CapsuleCollider->SetWorldScale3D(FVector(5.0f, 5.0f, 5.0f));
@@ -43,6 +44,12 @@ void APlayerCharacter::BeginPlay()
 
 	//Initialise the camera variable
 	Camera = FindComponentByClass<UCameraComponent>();
+
+	HealthComponent = FindComponentByClass<UHealthComponent>();
+	if (HealthComponent)
+	{
+		HealthComponent->SetIsReplicated(true);
+	}
 
 	// Get the skeletal mesh and then get the anim instance from it cast to the first person anim instance.
 	USkeletalMeshComponent* SkeletalMesh = Cast<USkeletalMeshComponent>(GetDefaultSubobjectByName(TEXT("Arms")));
@@ -109,10 +116,12 @@ void APlayerCharacter::MoveForward(float Value)
 	FRotator ForwardRotation = GetControlRotation();
 	ForwardRotation.Roll = 0.0f;
 	ForwardRotation.Pitch = 0.0f;
+	
 	if (bSpeedBoost)
 	{
 		Value *= SpeedPercentage;
 	}
+	
 	AddMovementInput(ForwardRotation.Vector(), Value);
 }
 
@@ -158,9 +167,8 @@ void APlayerCharacter::Turn(float Value)
 
 void APlayerCharacter::SprintStart()
 {
-	GetCharacterMovement()->MaxWalkSpeed = SprintMovementSpeed;
-
 	ServerSprintStart();
+	GetCharacterMovement()->MaxWalkSpeed = SprintMovementSpeed;
 
 	if (AnimInstance)
 	{
@@ -170,9 +178,8 @@ void APlayerCharacter::SprintStart()
 
 void APlayerCharacter::SprintEnd()
 {
-	GetCharacterMovement()->MaxWalkSpeed = NormalMovementSpeed;
-
 	ServerSprintEnd();
+	GetCharacterMovement()->MaxWalkSpeed = NormalMovementSpeed;
 
 	if (AnimInstance)
 	{

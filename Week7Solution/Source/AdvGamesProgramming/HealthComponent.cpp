@@ -3,6 +3,7 @@
 
 #include "Engine.h"
 #include "HealthComponent.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values for this component's properties
 UHealthComponent::UHealthComponent()
@@ -42,6 +43,14 @@ void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 			ResetDefence();
 		}
 	}
+
+}
+
+void UHealthComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(UHealthComponent, CurrentHealth);
 }
 
 void UHealthComponent::OnTakeDamage(float Damage)
