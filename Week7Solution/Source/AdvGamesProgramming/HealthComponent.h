@@ -48,4 +48,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void IncreaseDefence(float DefPoints);
 	void ResetDefence();
+
+private:
+	UFUNCTION()
+		void UpdateHealthBar();
 };

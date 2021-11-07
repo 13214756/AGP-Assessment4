@@ -265,3 +265,8 @@ void APlayerCharacter::ServerInteract_Implementation()
 		CollidedSpawner->HideSpawner();
 	}
 }
+
+void APlayerCharacter::DisableInput()
+{
+	DisableInput(Cast<APlayerController>(this));
+}

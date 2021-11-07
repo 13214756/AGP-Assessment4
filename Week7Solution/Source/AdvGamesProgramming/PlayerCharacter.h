@@ -79,6 +79,8 @@ public:
 	UFUNCTION()
 	void OnEndOverlap(class UPrimitiveComponent* OverlappedComponent, class AActor* OtherActor, class UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex);
 
+	void DisableInput();
+
 private:
 
 	UCameraComponent* Camera;
