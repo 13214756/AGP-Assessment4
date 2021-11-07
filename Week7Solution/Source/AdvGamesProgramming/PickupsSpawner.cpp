@@ -48,7 +48,7 @@ APickupsSpawner::APickupsSpawner()
 	}
 
 	SpawnTime = 0.1f;
-	LockTimer = 3.0f;
+	LockTimer = 30.0f;
 	bBoxUnlocked = false;
 
 	BoosterSpawner = nullptr;
@@ -301,7 +301,7 @@ void APickupsSpawner::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	//DOREPLIFETIME(APickupsSpawner, LockTimer);
+	DOREPLIFETIME(APickupsSpawner, LockTimer);
 	//DOREPLIFETIME(APickupsSpawner, bBoxUnlocked);
 	DOREPLIFETIME(APickupsSpawner, PickupInt);
 }

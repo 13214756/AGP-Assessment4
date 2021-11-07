@@ -76,7 +76,7 @@ void ALootSpawner::BoxOpen()
 
 void ALootSpawner::SpawnNewPickup()
 {
-	ServerSpawnNewPickup();
+	//ServerSpawnNewPickup();
 	//GetWorld()->SpawnActor<APickupsSpawner>(SpawnLocation, SpawnRotation, SpawnInfo);
 	/*
 	UE_LOG(LogTemp, Warning, TEXT("SpawnNewPickup() running"));
