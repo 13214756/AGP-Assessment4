@@ -16,6 +16,7 @@ public:
 	// Sets default values for this actor's properties
 	AArenaAndWall();
 	UProceduralMeshComponent* Floor;
+	UProceduralMeshComponent* Ceiling;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TArray<TSubclassOf<AActor>> WallClasses;
@@ -45,6 +46,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 		void GenerateMap();
+
+	UFUNCTION(BlueprintCallable)
+		void GenerateCeiling();
 
 	virtual bool ShouldTickIfViewportsOnly() const override;
 
