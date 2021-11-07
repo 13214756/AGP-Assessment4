@@ -22,6 +22,8 @@ private:
 	UPROPERTY(meta = (BindWidget))
 		UButton* ButtonJoin;
 	UPROPERTY(meta = (BindWidget))
+		UButton* ButtonPlay;
+	UPROPERTY(meta = (BindWidget))
 	UButton* ButtonInstructions;
 	UPROPERTY(meta = (BindWidget))
 	UButton* ButtonQuit;
@@ -31,11 +33,15 @@ private:
 		UButton* ButtonGame2;
 	UPROPERTY(meta = (BindWidget))
 		UButton* ButtonGame3;
+	UPROPERTY(EditAnywhere)
+		FName LevelToLoad;
 
 	UFUNCTION()
 		void OnHostButtonPressed();
 	UFUNCTION()
 		void OnJoinButtonPressed();
+	UFUNCTION()
+		void OnPlayButtonPressed();
 	UFUNCTION()
 		void OnInstructionButtonPressed();
 	UFUNCTION()

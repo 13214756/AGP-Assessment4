@@ -14,10 +14,12 @@ AArenaAndWall::AArenaAndWall()
 
 	Floor = CreateDefaultSubobject<UProceduralMeshComponent>(TEXT("Mesh Component"));
 	RootComponent = Floor;
+	Ceiling = CreateDefaultSubobject<UProceduralMeshComponent>(TEXT("Secondary Mesh Component"));
 
 	Width = 50.0f;
 	Height = 50.0f;
 	GridSize = 100.0f;
+	
 
 	bRegenerateMap = false;
 	//Initalization of variables to fit wall dimensions 400x20x300
@@ -39,6 +41,8 @@ void AArenaAndWall::BeginPlay()
 	//Creates both the inner and outer walls
 	GenerateWalls();
 	CreateOuterWall();
+	GenerateCeiling();
+	
 }
 
 // Called every frame
@@ -68,7 +72,7 @@ void AArenaAndWall::GenerateMap()
 	{
 		for (int32 X = 0; X < Width; X++)
 		{
-			Vertices.Add(FVector(X * GridSize, Y * GridSize, 0.0));
+			Vertices.Add(FVector(X * GridSize, Y * GridSize, 0.0f));
 			UVCoords.Add(FVector2D(X, Y));
 
 			if (X != Width - 1 && Y != Height - 1)
@@ -89,6 +93,35 @@ void AArenaAndWall::GenerateMap()
 
 	UE_LOG(LogTemp, Warning, TEXT("Vertices Count: %i | UVCoords Count: %i | Triangles Count: %i"), Vertices.Num(), UVCoords.Num(), Triangles.Num())
 
+}
+
+void AArenaAndWall::GenerateCeiling()
+{
+	for (int32 Y = 0; Y < Height; Y++)
+	{
+		for (int32 X = 0; X < Width; X++)
+		{
+			Vertices.Add(FVector(X * GridSize, Y * GridSize, WallHeight));
+			UVCoords.Add(FVector2D(X, Y));
+
+			if (X != Width - 1 && Y != Height - 1)
+			{
+				Triangles.Add((Y + 1) * Width + X + 1);
+				Triangles.Add((Y + 1) * Width + X);
+				Triangles.Add(Y * Width + X + 1);
+				Triangles.Add(Y * Width + X + 1);
+				Triangles.Add((Y + 1) * Width + X);
+				Triangles.Add(Y * Width + X);
+			}
+		}
+	}
+
+	UKismetProceduralMeshLibrary::CalculateTangentsForMesh(Vertices, Triangles, UVCoords, Normals, Tangents);
+
+	Ceiling->CreateMeshSection(0, Vertices, Triangles, Normals, UVCoords, TArray<FColor>(), Tangents, true);
+	
+
+	UE_LOG(LogTemp, Warning, TEXT("Vertices Count: %i | UVCoords Count: %i | Triangles Count: %i"), Vertices.Num(), UVCoords.Num(), Triangles.Num())
 }
 
 //Clears the map so that it can be regenerated
