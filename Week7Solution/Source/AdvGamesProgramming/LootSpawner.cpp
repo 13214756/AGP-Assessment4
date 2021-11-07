@@ -4,6 +4,7 @@
 #include "LootSpawner.h"
 #include "Components/BoxComponent.h"
 #include "PickupsSpawner.h"
+#include "Engine/World.h"
 
 // Sets default values
 ALootSpawner::ALootSpawner()
@@ -47,7 +48,7 @@ void ALootSpawner::Tick(float DeltaTime)
 		TimeTillAutoDestroy -= DeltaTime;
 		if (TimeTillAutoDestroy <= 0.0f)
 		{
-			SpawnNewPickup();
+			//SpawnNewPickup();
 			DestroySelf();
 		}
 	}
@@ -75,6 +76,26 @@ void ALootSpawner::BoxOpen()
 
 void ALootSpawner::SpawnNewPickup()
 {
+	ServerSpawnNewPickup();
+	//GetWorld()->SpawnActor<APickupsSpawner>(SpawnLocation, SpawnRotation, SpawnInfo);
+	/*
+	UE_LOG(LogTemp, Warning, TEXT("SpawnNewPickup() running"));
+	AssociatedSpawner = Cast<APickupsSpawner>(GetAttachParentActor());
+	if (AssociatedSpawner)
+	{
+		AssociatedSpawner->ResetSpawner();
+		UE_LOG(LogTemp, Warning, TEXT("Found AssociatedSpawner"));
+	}*/
+}
+
+void ALootSpawner::DestroySelf()
+{
+	ServerDestroySelf();
+	Destroy();
+}
+
+void ALootSpawner::ServerSpawnNewPickup_Implementation()
+{
 	//GetWorld()->SpawnActor<APickupsSpawner>(SpawnLocation, SpawnRotation, SpawnInfo);
 	UE_LOG(LogTemp, Warning, TEXT("SpawnNewPickup() running"));
 	AssociatedSpawner = Cast<APickupsSpawner>(GetAttachParentActor());
@@ -85,7 +106,7 @@ void ALootSpawner::SpawnNewPickup()
 	}
 }
 
-void ALootSpawner::DestroySelf()
+void ALootSpawner::ServerDestroySelf_Implementation()
 {
 	Destroy();
 }

@@ -7,6 +7,7 @@
 #include "BoostSpawner.h"
 #include "WeaponSpawner.h"
 #include "GameHUD.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 APickupsSpawner::APickupsSpawner()
@@ -46,7 +47,7 @@ APickupsSpawner::APickupsSpawner()
 	}
 
 	SpawnTime = 0.1f;
-	LockTimer = 30.0f;
+	LockTimer = 3.0f;
 	bBoxUnlocked = false;
 
 	BoosterSpawner = nullptr;
@@ -75,25 +76,6 @@ void APickupsSpawner::Tick(float DeltaTime)
 		LockTimer -= DeltaTime;
 		if (LockTimer <= 0.0f)
 		{
-			if (!bBoxUnlocked)
-			{
-				if (PickupInt == 1)
-				{
-					//BoosterSpawnRef->BoxOpen();
-					if (BoosterSpawner)
-					{
-						BoosterSpawner->BoxOpen();
-					}
-				}
-				else
-				{
-					//WeaponSpawnRef->BoxOpen();
-					if (WeaponSpawner)
-					{
-						WeaponSpawner->BoxOpen();
-					}
-				}
-			}
 			bBoxUnlocked = true;
 			LootBox->SetMaterial(0, UnlockedMaterial);
 		}
@@ -123,6 +105,8 @@ void APickupsSpawner::OnExitSpawner(class UPrimitiveComponent* OverlappedCompone
 
 void APickupsSpawner::SpawnPickup()
 {
+	//ServerSpawnPickup();
+	
 	if (PickupInt == 1)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Spawning boost spawner"));
@@ -131,18 +115,160 @@ void APickupsSpawner::SpawnPickup()
 
 		GetWorld()->GetTimerManager().SetTimer(OutHandle, this, &APickupsSpawner::SpawnBoostSpawner, SpawnTime);*/
 		SpawnBoostSpawner();
+
+		UE_LOG(LogTemp, Warning, TEXT("SpawnPickup()"));
 	}
-	else
+	else if (PickupInt == 2)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Spawning weapon spawner"));
 		/*FTimerHandle OutHandle;
 
 		GetWorld()->GetTimerManager().SetTimer(OutHandle, this, &APickupsSpawner::SpawnWeaponSpawner, SpawnTime);*/
 		SpawnWeaponSpawner();
+
+		UE_LOG(LogTemp, Warning, TEXT("SpawnPickup()"));
 	}
 }
 
 void APickupsSpawner::SpawnBoostSpawner()
+{
+	ServerSpawnBoostSpawner();
+	/*
+	if (BoostSpawnerBP)
+	{
+		FActorSpawnParameters BoostSpawnParams;
+
+		ABoostSpawner* BoosterSpawnerRef = GetWorld()->SpawnActor<ABoostSpawner>(BoostSpawnerBP, GetTransform(), FActorSpawnParameters());
+		BoosterSpawnerRef->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
+		BoosterSpawner = BoosterSpawnerRef;
+
+		UE_LOG(LogTemp, Warning, TEXT("Boost spawner spawned"));
+	}*/
+}
+
+void APickupsSpawner::SpawnWeaponSpawner()
+{
+	ServerSpawnWeaponSpawner();
+	/*
+	if (WeaponSpawnerBP)
+	{
+		FActorSpawnParameters WeaponSpawnParams;
+
+		AWeaponSpawner* WeaponSpawnerRef = GetWorld()->SpawnActor<AWeaponSpawner>(WeaponSpawnerBP, GetTransform(), FActorSpawnParameters());
+		WeaponSpawnerRef->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
+		WeaponSpawner = WeaponSpawnerRef;
+
+		UE_LOG(LogTemp, Warning, TEXT("Weapon spawner spawned"));
+	}*/
+}
+
+void APickupsSpawner::OpenBox()
+{
+	if (bBoxUnlocked)
+	{
+		if (PickupInt == 1)
+		{
+			if (BoosterSpawner)
+			{
+				BoosterSpawner->BoxOpen();
+			}
+		}
+		else if (PickupInt == 2)
+		{
+			if (WeaponSpawner)
+			{
+				WeaponSpawner->BoxOpen();
+			}
+		}
+	}
+}
+
+void APickupsSpawner::HideSpawner()
+{
+	ServerHideSpawner();
+
+	if (bBoxUnlocked)
+	{
+		SetActorHiddenInGame(true);
+		SetActorEnableCollision(false);
+		SetActorTickEnabled(false);
+	}
+}
+
+void APickupsSpawner::ResetSpawner()
+{
+	ServerResetSpawner();
+	
+	SetActorHiddenInGame(false);
+	SetActorEnableCollision(true);
+	SetActorTickEnabled(true);
+
+	PickupInt = FMath::RandRange(1, 2);
+	LootBox->SetMaterial(0, LockedMaterial);
+	LockTimer = 30.0f;
+	bBoxUnlocked = false;
+	BoosterSpawner = nullptr;
+	WeaponSpawner = nullptr;
+
+	//SpawnPickup();
+
+	UE_LOG(LogTemp, Warning, TEXT("ResetSpawner() has run"));
+}
+/*
+void APickupsSpawner::ServerSpawnPickup_Implementation()
+{
+	if (PickupInt == 1)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Spawning boost spawner"));
+		
+		//FTimerHandle OutHandle;
+
+		//GetWorld()->GetTimerManager().SetTimer(OutHandle, this, &APickupsSpawner::SpawnBoostSpawner, SpawnTime);
+		SpawnBoostSpawner();
+
+		UE_LOG(LogTemp, Warning, TEXT("SpawnPickup()"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Spawning weapon spawner"));
+		//FTimerHandle OutHandle;
+
+		//GetWorld()->GetTimerManager().SetTimer(OutHandle, this, &APickupsSpawner::SpawnWeaponSpawner, SpawnTime);
+		SpawnWeaponSpawner();
+
+		UE_LOG(LogTemp, Warning, TEXT("SpawnPickup()"));
+	}
+}*/
+
+void APickupsSpawner::ServerHideSpawner_Implementation()
+{
+	if (bBoxUnlocked)
+	{
+		SetActorHiddenInGame(true);
+		SetActorEnableCollision(false);
+		SetActorTickEnabled(false);
+	}
+}
+
+void APickupsSpawner::ServerResetSpawner_Implementation()
+{
+	SetActorHiddenInGame(false);
+	SetActorEnableCollision(true);
+	SetActorTickEnabled(true);
+
+	PickupInt = FMath::RandRange(1, 2);
+	LootBox->SetMaterial(0, LockedMaterial);
+	LockTimer = 30.0f;
+	bBoxUnlocked = false;
+	//BoosterSpawner = nullptr;
+	//WeaponSpawner = nullptr;
+
+	//SpawnPickup();
+
+	UE_LOG(LogTemp, Warning, TEXT("ResetSpawner() has run"));
+}
+
+void APickupsSpawner::ServerSpawnBoostSpawner_Implementation()
 {
 	if (BoostSpawnerBP)
 	{
@@ -156,7 +282,7 @@ void APickupsSpawner::SpawnBoostSpawner()
 	}
 }
 
-void APickupsSpawner::SpawnWeaponSpawner()
+void APickupsSpawner::ServerSpawnWeaponSpawner_Implementation()
 {
 	if (WeaponSpawnerBP)
 	{
@@ -170,28 +296,11 @@ void APickupsSpawner::SpawnWeaponSpawner()
 	}
 }
 
-void APickupsSpawner::HideSpawner()
+void APickupsSpawner::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
-	if (bBoxUnlocked)
-	{
-		SetActorHiddenInGame(true);
-		SetActorEnableCollision(false);
-		SetActorTickEnabled(false);
-	}
-}
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-void APickupsSpawner::ResetSpawner()
-{
-
-	SetActorHiddenInGame(false);
-	SetActorEnableCollision(true);
-	SetActorTickEnabled(true);
-
-	PickupInt = FMath::RandRange(1, 2);
-	LootBox->SetMaterial(0, LockedMaterial);
-	//SpawnPickup();
-	//LockTimer = 30.0f;
-	//bBoxUnlocked = false;
-
-	UE_LOG(LogTemp, Warning, TEXT("ResetSpawner() has run"));
+	//DOREPLIFETIME(APickupsSpawner, LockTimer);
+	//DOREPLIFETIME(APickupsSpawner, bBoxUnlocked);
+	DOREPLIFETIME(APickupsSpawner, PickupInt);
 }

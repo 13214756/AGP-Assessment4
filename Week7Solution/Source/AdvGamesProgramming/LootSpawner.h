@@ -46,4 +46,9 @@ public:
 	void DestroySelf();
 
 	class APickupsSpawner* AssociatedSpawner;
+
+	UFUNCTION(Server, Reliable)
+		void ServerSpawnNewPickup();
+	UFUNCTION(Server, Reliable)
+		void ServerDestroySelf();
 };

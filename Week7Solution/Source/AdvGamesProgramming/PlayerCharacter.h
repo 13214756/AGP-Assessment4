@@ -56,6 +56,8 @@ public:
 		void ServerSprintStart();
 	UFUNCTION(Server, Reliable)
 		void ServerSprintEnd();
+	UFUNCTION(Server, Reliable)
+		void ServerInteract();
 
 	float SpeedPercentage;
 	bool bSpeedBoost;

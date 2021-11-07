@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "LootSpawner.h"
-//#include "PickupsSpawner.h"
 #include "WeaponSpawner.generated.h"
 
 UENUM(BlueprintType)
