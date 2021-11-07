@@ -29,8 +29,11 @@ public:
 	class UStaticMeshComponent* LootBox;
 	class UMaterial* LockedMaterial;
 	class UMaterial* UnlockedMaterial;
+	UPROPERTY(Replicated)
 	float LockTimer;
+	UPROPERTY(Replicated)
 	bool bBoxUnlocked;
+	UPROPERTY(Replicated)
 	int32 PickupInt;
 	class AGameHUD* GameHUD;
 
@@ -65,5 +68,19 @@ public:
 	class AWeaponSpawner* WeaponSpawner;
 
 	void ResetSpawner();
+	void OpenBox();
+	
+	//UFUNCTION(Server, Reliable)
+	//	void ServerSpawnPickup();
+	UFUNCTION(Server, Reliable)
+		void ServerHideSpawner();
+	UFUNCTION(Server, Reliable)
+		void ServerResetSpawner();
+	
+	UFUNCTION(Server, Reliable)
+		void ServerSpawnBoostSpawner();
+	UFUNCTION(Server, Reliable)
+		void ServerSpawnWeaponSpawner();
 
+	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 };

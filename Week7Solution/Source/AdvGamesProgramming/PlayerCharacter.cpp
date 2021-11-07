@@ -208,6 +208,7 @@ void APlayerCharacter::Reload()
 
 void APlayerCharacter::Interact()
 {
+	ServerInteract();
 	if (bCurrentlyColliding)
 	{
 		CollidedSpawner->HideSpawner();
@@ -256,3 +257,11 @@ void APlayerCharacter::OnEndOverlap(UPrimitiveComponent * OverlappedComponent, A
 	//}
 }
 
+
+void APlayerCharacter::ServerInteract_Implementation()
+{
+	if (bCurrentlyColliding)
+	{
+		CollidedSpawner->HideSpawner();
+	}
+}

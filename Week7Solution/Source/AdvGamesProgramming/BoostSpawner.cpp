@@ -212,6 +212,7 @@ void ABoostSpawner::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLif
 	DOREPLIFETIME(ABoostSpawner, Attack);
 	DOREPLIFETIME(ABoostSpawner, Defence);
 	DOREPLIFETIME(ABoostSpawner, Speed);
+	DOREPLIFETIME(ABoostSpawner, Rarity);
 }
 
 /*

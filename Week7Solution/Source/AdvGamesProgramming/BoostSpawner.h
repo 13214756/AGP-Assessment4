@@ -18,6 +18,7 @@ enum class EBoostPickupType : uint8
 	SPEED
 };
 
+UENUM()
 enum class EBoostPickupRarity : uint8
 {
 	LEGENDARY,
@@ -67,10 +68,12 @@ public:
 	UPROPERTY(Replicated, BlueprintReadOnly)
 		EBoostPickupType Type;
 
+	UPROPERTY(Replicated, BlueprintReadOnly)
 	EBoostPickupRarity Rarity;
 
 	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	int32 Rand;
 	int32 RandItem;
+
 };

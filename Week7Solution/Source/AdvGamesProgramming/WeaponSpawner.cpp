@@ -3,6 +3,7 @@
 
 #include "WeaponSpawner.h"
 #include "Net/UnrealNetwork.h"
+#include "Engine/World.h"
 
 
 
