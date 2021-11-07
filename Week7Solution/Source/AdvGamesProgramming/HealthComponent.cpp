@@ -4,9 +4,6 @@
 #include "HealthComponent.h"
 #include "Engine.h"
 #include "Net/UnrealNetwork.h"
-#include "Kismet/GameplayStatics.h"
-#include "GameHUD.h"
-#include "PlayerCharacter.h"
 
 // Sets default values for this component's properties
 UHealthComponent::UHealthComponent()
@@ -68,15 +65,7 @@ void UHealthComponent::OnTakeDamage(float Damage)
 
 void UHealthComponent::OnDeath()
 {
-	if (GetOwner()->GetLocalRole() == ROLE_AutonomousProxy || (GetOwner()->GetLocalRole() == ROLE_Authority && Cast<APawn>(GetOwner())->IsLocallyControlled()))
-	{
-		AGameHUD* GameHUD = Cast<AGameHUD>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD());
-		if (IsValid(GameHUD))
-		{
-			GameHUD->ShowGameOverHUD();
-		}
-		Cast<APlayerCharacter>(GetController())->DisableInput();
-	}
+
 }
 
 float UHealthComponent::HealthPercentageRemaining()
@@ -108,16 +97,4 @@ void UHealthComponent::ResetDefence()
 	DmgPercentTaken = 1.0f;
 
 	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Blue, FString::Printf(TEXT("Defence buff has worn off")));
-}
-
-void UHealthComponent::UpdateHealthBar()
-{
-	if (GetOwner()->GetLocalRole() == ROLE_AutonomousProxy || (GetOwner()->GetLocalRole() == ROLE_Authority && Cast<APawn>(GetOwner())->IsLocallyControlled()))
-	{
-		AGameHUD* GameHUD = Cast<AGameHUD>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD());
-		if (IsValid(GameHUD))
-		{
-			GameHUD->SetPlayerHealthBarPercent(CurrentHealth / MaxHealth);
-		}
-	}
 }
