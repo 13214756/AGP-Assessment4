@@ -3,6 +3,7 @@
 
 #include "HealthComponent.h"
 #include "Engine.h"
+#include "GameHUD.h"
 #include "Net/UnrealNetwork.h"
 
 // Sets default values for this component's properties
@@ -25,6 +26,13 @@ void UHealthComponent::BeginPlay()
 
 	CurrentHealth = MaxHealth;
 	
+	if (APawn* OwnerPawn = Cast<APawn>(GetOwner()))
+	{
+		if (GetOwner()->GetLocalRole() == ROLE_Authority && OwnerPawn->IsLocallyControlled())
+		{
+			UpdateHealthBar();
+		}
+	}
 }
 
 
@@ -60,6 +68,13 @@ void UHealthComponent::OnTakeDamage(float Damage)
 	{
 		CurrentHealth = 0;
 		OnDeath();
+	}
+	if (APawn* OwnerPawn = Cast<APawn>(GetOwner()))
+	{
+		if (GetOwner()->GetLocalRole() == ROLE_Authority && OwnerPawn->IsLocallyControlled())
+		{
+			UpdateHealthBar();
+		}
 	}
 }
 
@@ -97,4 +112,16 @@ void UHealthComponent::ResetDefence()
 	DmgPercentTaken = 1.0f;
 
 	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Blue, FString::Printf(TEXT("Defence buff has worn off")));
+}
+
+void UHealthComponent::UpdateHealthBar()
+{
+	if (GetOwner()->GetLocalRole() == ROLE_AutonomousProxy || (GetOwner()->GetLocalRole() == ROLE_Authority && Cast<APawn>(GetOwner())->IsLocallyControlled()))
+	{
+		AGameHUD* GameHUD = Cast<AGameHUD>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD());
+		if (IsValid(GameHUD))
+		{
+			GameHUD->SetPlayerHealthBarPercent(CurrentHealth / MaxHealth);
+		}
+	}
 }

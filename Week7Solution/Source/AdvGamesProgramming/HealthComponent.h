@@ -20,11 +20,14 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
+private:
+	UFUNCTION()
+		void UpdateHealthBar();
 public:	
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
 	float MaxHealth;
-	UPROPERTY(Replicated, BlueprintReadOnly)
+	UPROPERTY(ReplicatedUsing = UpdateHealthBar, BlueprintReadOnly)
 	float CurrentHealth;
 
 	// Called every frame
