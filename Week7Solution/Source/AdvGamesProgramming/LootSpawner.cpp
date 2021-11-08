@@ -25,7 +25,7 @@ ALootSpawner::ALootSpawner()
 
 	bBoxClosed = true;
 	TimeTillAutoDestroy = 30.0f;
-
+	
 	AssociatedSpawner = nullptr;
 }
 

@@ -100,23 +100,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 void APlayerCharacter::MoveForward(float Value) 
 {
-	/*
-		What is frame rate independence?
 
-		This is when object movement is not tied to the frame rate. Regardless of how quickly
-		each frame is calculated, objects will move the same amount over the same period
-		of time. If something was frame rate dependent, the speed of movement of objects
-		in the world would be tied to the framerate, so players with a higher frame rate
-		would be able to move quicker than those players with weaker machines that are
-		running on a lower framerate.
-
-		Why don't we use DeltaSeconds for movement?
-		
-		The CharacterMovementComponent attached to the ACharacter class automatically
-		deals with frame rate independence of movement. This is only the case for the 
-		ACharacter class and is not the case for movement applied to APawn class derived
-		actors.
-	*/
 	FRotator ForwardRotation = GetControlRotation();
 	ForwardRotation.Roll = 0.0f;
 	ForwardRotation.Pitch = 0.0f;
