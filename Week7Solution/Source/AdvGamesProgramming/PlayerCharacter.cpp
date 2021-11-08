@@ -211,6 +211,7 @@ void APlayerCharacter::Interact()
 	if (bCurrentlyColliding)
 	{
 		CollidedSpawner->HideSpawner();
+		
 	}
 }
 

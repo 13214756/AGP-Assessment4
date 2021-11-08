@@ -12,8 +12,8 @@ UCLASS()
 class ADVGAMESPROGRAMMING_API APickupsSpawner : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	APickupsSpawner();
 
@@ -21,17 +21,20 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	USceneComponent* SpawnerSceneComponent;
 	UPROPERTY(EditAnywhere)
-	class UBoxComponent* SpawnerBoundingBox;
+		class UBoxComponent* SpawnerBoundingBox;
 	UPROPERTY(EditAnywhere)
-	class UStaticMeshComponent* LootBox;
+		class UStaticMeshComponent* LootBox;
 	class UMaterial* LockedMaterial;
 	class UMaterial* UnlockedMaterial;
-	float LockTimer;
-	bool bBoxUnlocked;
-	int32 PickupInt;
+	UPROPERTY(Replicated)
+		float LockTimer;
+	UPROPERTY(Replicated)
+		bool bBoxUnlocked;
+	UPROPERTY(Replicated)
+		int32 PickupInt;
 	class AGameHUD* GameHUD;
 
 	// Called every frame
@@ -42,22 +45,22 @@ public:
 	FActorSpawnParameters SpawnInfo;
 
 	UPROPERTY(EditDefaultsOnly, Category = "BoostSpawning")
-	TSubclassOf<ABoostSpawner> BoostSpawnerBP;
+		TSubclassOf<ABoostSpawner> BoostSpawnerBP;
 	UPROPERTY(EditDefaultsOnly, Category = "WeaponSpawning")
-	TSubclassOf<AWeaponSpawner> WeaponSpawnerBP;
+		TSubclassOf<AWeaponSpawner> WeaponSpawnerBP;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Spawning")
-	float SpawnTime;
+		float SpawnTime;
 
 	UFUNCTION()
-	void SpawnBoostSpawner();
+		void SpawnBoostSpawner();
 	UFUNCTION()
-	void SpawnWeaponSpawner();
+		void SpawnWeaponSpawner();
 
 	UFUNCTION()
-	virtual void OnEnterSpawner(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+		virtual void OnEnterSpawner(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	UFUNCTION()
-	virtual void OnExitSpawner(class UPrimitiveComponent* OverlappedComponent, class AActor* OtherActor, class UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex);
+		virtual void OnExitSpawner(class UPrimitiveComponent* OverlappedComponent, class AActor* OtherActor, class UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex);
 	void SpawnPickup();
 	void HideSpawner();
 
@@ -65,5 +68,20 @@ public:
 	class AWeaponSpawner* WeaponSpawner;
 
 	void ResetSpawner();
+	void OpenBox();
 
+	//UFUNCTION(Server, Reliable)
+	//	void ServerSpawnPickup();
+	UFUNCTION(Server, Reliable)
+		void ServerHideSpawner();
+	UFUNCTION(Server, Reliable)
+		void ServerResetSpawner();
+
+	UFUNCTION(Server, Reliable)
+		void ServerSpawnBoostSpawner();
+	UFUNCTION(Server, Reliable)
+		void ServerSpawnWeaponSpawner();
+
+
+	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 };

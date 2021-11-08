@@ -51,4 +51,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void IncreaseDefence(float DefPoints);
 	void ResetDefence();
+
+	
 };

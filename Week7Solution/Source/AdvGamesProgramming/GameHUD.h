@@ -32,8 +32,11 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 		TSubclassOf<UUserWidget> LootBoxWidgetClass;
+	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
+		TSubclassOf<UUserWidget> GameOverWidgetClass;
 
 	void SetPlayerHealthBarPercent(float Percent);
+	void ShowGameOverScreen();
 	void HideHUD();
 	void ShowHUD();
 
@@ -41,8 +44,10 @@ public:
 
 private:
 	ULootBoxWidget* LootBoxWidget;
+	//UGameOverWidget* GameOverWidget;
 
 	TSubclassOf<UUserWidget> GameHUDClass;
 	UUserWidget* CurrentGameHUDWidget;
 	class UProgressBar* HealthProgressBar;
+	class UOverlay* GameOverScreen;
 };

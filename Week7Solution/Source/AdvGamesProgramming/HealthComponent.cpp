@@ -25,7 +25,7 @@ void UHealthComponent::BeginPlay()
 	Super::BeginPlay();
 
 	CurrentHealth = MaxHealth;
-	
+
 	if (APawn* OwnerPawn = Cast<APawn>(GetOwner()))
 	{
 		if (GetOwner()->GetLocalRole() == ROLE_Authority && OwnerPawn->IsLocallyControlled())
@@ -64,9 +64,11 @@ void UHealthComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 void UHealthComponent::OnTakeDamage(float Damage)
 {
 	CurrentHealth -= (DmgPercentTaken * Damage);
-	if (CurrentHealth < 0.0f)
+	if (CurrentHealth <= 0.0f)
 	{
 		CurrentHealth = 0;
+		UE_LOG(LogTemp, Warning, TEXT("Player is Dead"));
+
 		OnDeath();
 	}
 	if (APawn* OwnerPawn = Cast<APawn>(GetOwner()))
@@ -80,12 +82,25 @@ void UHealthComponent::OnTakeDamage(float Damage)
 
 void UHealthComponent::OnDeath()
 {
+	UE_LOG(LogTemp, Warning, TEXT("on death is called"));
+
+	if (GetOwner()->GetLocalRole() == ROLE_AutonomousProxy || (GetOwner()->GetLocalRole() == ROLE_Authority && Cast<APawn>(GetOwner())->IsLocallyControlled()))
+	{
+		AGameHUD* GameHUD = Cast<AGameHUD>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD());
+		if (GameHUD)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("About to display game over"));
+
+			GameHUD->ShowGameOverScreen();
+		}
+		//Cast<APlayerCharacterBlueprint>(GetController())->DisableInput();
+	}
 
 }
 
 float UHealthComponent::HealthPercentageRemaining()
 {
-	return CurrentHealth/MaxHealth * 100.0f;
+	return CurrentHealth / MaxHealth * 100.0f;
 }
 
 void UHealthComponent::Heal(float Health)

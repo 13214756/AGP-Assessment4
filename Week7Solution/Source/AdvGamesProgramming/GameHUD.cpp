@@ -34,6 +34,8 @@ AGameHUD::AGameHUD()
 	if (CurrentGameHUDWidget)
 	{
 		HealthProgressBar = Cast<UProgressBar>(CurrentGameHUDWidget->GetWidgetFromName(TEXT("ProgHealthBar")));
+		GameOverScreen = Cast<UOverlay>(CurrentGameHUDWidget->GetWidgetFromName(TEXT("GameOverScreen")));
+		GameOverScreen->SetVisibility(ESlateVisibility::Hidden);
 	}
 }
 
@@ -49,6 +51,16 @@ void AGameHUD::BeginPlay()
 			LootBoxWidget->AddToViewport();
 		}
 	}
+	/*
+	if (GameOverWidgetClass)
+	{
+		GameOverWidget = CreateWidget<UGameOverWidget>(GetWorld(), GameOverWidgetClass);
+		if (GameOverWidget)
+		{
+			GameOverWidget->AddToViewport();
+		}
+	}
+	*/
 }
 
 void AGameHUD::Tick(float DeltaSeconds)
@@ -74,6 +86,20 @@ void AGameHUD::HideWidget()
 	if (LootBoxWidget)
 	{
 		LootBoxWidget->HideWidget();
+	}
+}
+
+void AGameHUD::ShowGameOverScreen()
+{
+	GameOverScreen = Cast<UOverlay>(CurrentGameHUDWidget->GetWidgetFromName(TEXT("GameOverScreen")));
+	
+	UE_LOG(LogTemp, Warning, TEXT("GameOverScreen Cast Pending"));
+
+	if (GameOverScreen)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("GameOverScreen Cast Successful"));
+
+		GameOverScreen->SetVisibility(ESlateVisibility::Visible);
 	}
 }
 
