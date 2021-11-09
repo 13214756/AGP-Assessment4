@@ -84,7 +84,10 @@ void UHealthComponent::OnDeath()
 {
 	UE_LOG(LogTemp, Warning, TEXT("on death is called"));
 
+	
+	/*
 	if (GetOwner()->GetLocalRole() == ROLE_AutonomousProxy || (GetOwner()->GetLocalRole() == ROLE_Authority && Cast<APawn>(GetOwner())->IsLocallyControlled()))
+
 	{
 		AGameHUD* GameHUD = Cast<AGameHUD>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD());
 		if (GameHUD)
@@ -93,9 +96,11 @@ void UHealthComponent::OnDeath()
 
 			GameHUD->ShowGameOverScreen();
 		}
-		//Cast<APlayerCharacterBlueprint>(GetController())->DisableInput();
-	}
 
+	}
+		//Cast<APlayerCharacterBlueprint>(GetController())->DisableInput();
+	
+	*/
 }
 
 float UHealthComponent::HealthPercentageRemaining()

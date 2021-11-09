@@ -306,6 +306,6 @@ void APickupsSpawner::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(APickupsSpawner, LockTimer);
-	DOREPLIFETIME(APickupsSpawner, bBoxUnlocked);
+	//DOREPLIFETIME(APickupsSpawner, bBoxUnlocked);
 	DOREPLIFETIME(APickupsSpawner, PickupInt);
 }
