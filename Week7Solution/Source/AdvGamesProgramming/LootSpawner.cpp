@@ -12,6 +12,7 @@ ALootSpawner::ALootSpawner()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	// Create scene and bounding box
 	LootSceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Scene Component"));
 	RootComponent = LootSceneComponent;
 	LootBoundingBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Bounding Box"));
@@ -20,6 +21,7 @@ ALootSpawner::ALootSpawner()
 	LootBoundingBox->OnComponentBeginOverlap.AddDynamic(this, &ALootSpawner::OnEnterLoot);
 	LootBoundingBox->SetWorldScale3D(FVector(1.0f, 1.0f, 1.0f));
 
+	// Set spawn location and rotation
 	SpawnLocation = GetActorLocation();
 	SpawnRotation = FRotator(0.0f, 0.0f, 0.0f);
 
@@ -88,12 +90,14 @@ void ALootSpawner::SpawnNewPickup()
 	}*/
 }
 
+//Implement destroy to self (for when pickup is not collected by player for 30s)
 void ALootSpawner::DestroySelf()
 {
 	ServerDestroySelf();
 	Destroy();
 }
 
+//Spawn new pickup
 void ALootSpawner::ServerSpawnNewPickup_Implementation()
 {
 	//GetWorld()->SpawnActor<APickupsSpawner>(SpawnLocation, SpawnRotation, SpawnInfo);
@@ -106,6 +110,7 @@ void ALootSpawner::ServerSpawnNewPickup_Implementation()
 	}
 }
 
+//Implement destroy to self to server (for when pickup is not collected by player for 30s)
 void ALootSpawner::ServerDestroySelf_Implementation()
 {
 	Destroy();

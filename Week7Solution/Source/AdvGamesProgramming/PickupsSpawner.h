@@ -70,8 +70,6 @@ public:
 	void ResetSpawner();
 	void OpenBox();
 
-	//UFUNCTION(Server, Reliable)
-	//	void ServerSpawnPickup();
 	UFUNCTION(Server, Reliable)
 		void ServerHideSpawner();
 	UFUNCTION(Server, Reliable)

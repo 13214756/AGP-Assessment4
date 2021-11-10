@@ -16,9 +16,11 @@ APickupsSpawner::APickupsSpawner()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	//Create scene component
 	SpawnerSceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Scene Component"));
 	RootComponent = SpawnerSceneComponent;
-
+	
+	//Create bounding box for overlap
 	SpawnerBoundingBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Bounding Box"));
 	SpawnerBoundingBox->AttachTo(RootComponent);
 	SpawnerBoundingBox->SetGenerateOverlapEvents(true);
@@ -27,6 +29,7 @@ APickupsSpawner::APickupsSpawner()
 	SpawnerBoundingBox->SetWorldScale3D(FVector(4.0f, 4.0f, 4.0f));
 	//SpawnerBoundingBox->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Block);
 
+	//Create cube mesh for box
 	LootBox = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Pickup Box"));
 	LootBox->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> LootBoxAsset(TEXT("StaticMesh'/Game/Assets/Meshes/CubeMesh.CubeMesh'"));
@@ -35,12 +38,15 @@ APickupsSpawner::APickupsSpawner()
 		LootBox->SetStaticMesh(LootBoxAsset.Object);
 	}
 
+	//Set material for when box is locked
 	LockedMaterial = CreateDefaultSubobject<UMaterial>(TEXT("Locked Material"));
 	static ConstructorHelpers::FObjectFinder<UMaterial> LockedMaterialAsset(TEXT("Material'/Game/Materials/LootBoxMaterialLocked.LootBoxMaterialLocked'"));
 	if (LockedMaterialAsset.Object)
 	{
 		LockedMaterial = LockedMaterialAsset.Object;
 	}
+
+	//Set material for when box is unlocked
 	UnlockedMaterial = CreateDefaultSubobject<UMaterial>(TEXT("Unlocked Material"));
 	static ConstructorHelpers::FObjectFinder<UMaterial> UnlockedMaterialAsset(TEXT("Material'/Game/Materials/LootBoxMaterialOpen.LootBoxMaterialOpen'"));
 	if (UnlockedMaterialAsset.Object)
@@ -85,6 +91,7 @@ void APickupsSpawner::Tick(float DeltaTime)
 	}
 }
 
+//Show loot box widget
 void APickupsSpawner::OnEnterSpawner(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (bBoxUnlocked)
@@ -97,6 +104,7 @@ void APickupsSpawner::OnEnterSpawner(UPrimitiveComponent* OverlappedComponent, A
 	}
 }
 
+//Hide loot box widget
 void APickupsSpawner::OnExitSpawner(class UPrimitiveComponent* OverlappedComponent, class AActor* OtherActor, class UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex)
 {
 	GameHUD = Cast<AGameHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
@@ -106,6 +114,7 @@ void APickupsSpawner::OnExitSpawner(class UPrimitiveComponent* OverlappedCompone
 	}
 }
 
+//Spawn a pickup based on PickupInt
 void APickupsSpawner::SpawnPickup()
 {
 	//ServerSpawnPickup();
@@ -133,40 +142,19 @@ void APickupsSpawner::SpawnPickup()
 	}
 }
 
+//Implement boost spawning to server
 void APickupsSpawner::SpawnBoostSpawner()
 {
 	ServerSpawnBoostSpawner();
-	/*
-	if (BoostSpawnerBP)
-	{
-		FActorSpawnParameters BoostSpawnParams;
-
-		ABoostSpawner* BoosterSpawnerRef = GetWorld()->SpawnActor<ABoostSpawner>(BoostSpawnerBP, GetTransform(), FActorSpawnParameters());
-		BoosterSpawnerRef->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
-		BoosterSpawner = BoosterSpawnerRef;
-
-		UE_LOG(LogTemp, Warning, TEXT("Boost spawner spawned"));
-	}*/
 }
 
-
-
+//Implement weapon spawning to server
 void APickupsSpawner::SpawnWeaponSpawner()
 {
 	ServerSpawnWeaponSpawner();
-	/*
-	if (WeaponSpawnerBP)
-	{
-		FActorSpawnParameters WeaponSpawnParams;
-
-		AWeaponSpawner* WeaponSpawnerRef = GetWorld()->SpawnActor<AWeaponSpawner>(WeaponSpawnerBP, GetTransform(), FActorSpawnParameters());
-		WeaponSpawnerRef->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
-		WeaponSpawner = WeaponSpawnerRef;
-
-		UE_LOG(LogTemp, Warning, TEXT("Weapon spawner spawned"));
-	}*/
 }
 
+//Setting box to open on pickup
 void APickupsSpawner::OpenBox()
 {
 	if (bBoxUnlocked)
@@ -188,6 +176,7 @@ void APickupsSpawner::OpenBox()
 	}
 }
 
+//Hiding spawner (when 'opened')
 void APickupsSpawner::HideSpawner()
 {
 	ServerHideSpawner();
@@ -200,6 +189,7 @@ void APickupsSpawner::HideSpawner()
 	}
 }
 
+//Reset spawner
 void APickupsSpawner::ResetSpawner()
 {
 	ServerResetSpawner();
@@ -245,6 +235,7 @@ void APickupsSpawner::ServerSpawnPickup_Implementation()
 	}
 }*/
 
+//Apply hiding of spawner box to server
 void APickupsSpawner::ServerHideSpawner_Implementation()
 {
 	if (bBoxUnlocked)
@@ -255,6 +246,7 @@ void APickupsSpawner::ServerHideSpawner_Implementation()
 	}
 }
 
+//Implement spawner reset to server
 void APickupsSpawner::ServerResetSpawner_Implementation()
 {
 	SetActorHiddenInGame(false);
@@ -273,6 +265,7 @@ void APickupsSpawner::ServerResetSpawner_Implementation()
 	UE_LOG(LogTemp, Warning, TEXT("ResetSpawner() has run"));
 }
 
+//Implement boost spawning to server
 void APickupsSpawner::ServerSpawnBoostSpawner_Implementation()
 {
 	if (BoostSpawnerBP)
@@ -287,6 +280,7 @@ void APickupsSpawner::ServerSpawnBoostSpawner_Implementation()
 	}
 }
 
+//Implement weapon spawning to server
 void APickupsSpawner::ServerSpawnWeaponSpawner_Implementation()
 {
 	if (WeaponSpawnerBP)
@@ -301,11 +295,11 @@ void APickupsSpawner::ServerSpawnWeaponSpawner_Implementation()
 	}
 }
 
+//Replicate the following variables to server
 void APickupsSpawner::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(APickupsSpawner, LockTimer);
-	//DOREPLIFETIME(APickupsSpawner, bBoxUnlocked);
 	DOREPLIFETIME(APickupsSpawner, PickupInt);
 }
