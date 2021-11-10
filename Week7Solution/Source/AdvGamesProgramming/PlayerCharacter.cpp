@@ -226,8 +226,8 @@ void APlayerCharacter::OnBeginOverlap(UPrimitiveComponent * OverlappedComponent,
 	//{
 		CollidedSpawner = Cast<APickupsSpawner>(OtherActor);
 		bCurrentlyColliding = true;
-		UE_LOG(LogTemp, Warning, TEXT("Colliding with spawner"));
-		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Blue, FString::Printf(TEXT("Can interact with spawner")));
+		//UE_LOG(LogTemp, Warning, TEXT("Colliding with spawner"));
+		//GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Blue, FString::Printf(TEXT("Can interact with spawner")));
 	//}
 }
 
@@ -237,7 +237,7 @@ void APlayerCharacter::OnEndOverlap(UPrimitiveComponent * OverlappedComponent, A
 	//{
 		CollidedSpawner = nullptr;
 		bCurrentlyColliding = false;
-		UE_LOG(LogTemp, Warning, TEXT("No longer colliding with spawner"));
+		//UE_LOG(LogTemp, Warning, TEXT("No longer colliding with spawner"));
 	//}
 }
 

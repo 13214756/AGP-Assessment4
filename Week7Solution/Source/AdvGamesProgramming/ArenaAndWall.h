@@ -18,13 +18,14 @@ public:
 	UProceduralMeshComponent* Floor;
 	UProceduralMeshComponent* Ceiling;
 
+	// The wall blueprints that are assigned in the blueprint of this actor
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TArray<TSubclassOf<AActor>> WallClasses;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TSubclassOf<AActor> WallClass;
 
 
-
+	// Size of the floor and ceiling generated
 	UPROPERTY(EditAnywhere)
 		int32 Width;
 	UPROPERTY(EditAnywhere)
@@ -38,6 +39,7 @@ public:
 	UPROPERTY(EditAnywhere)
 		bool bRegenerateMap;
 
+	// Arrays to store the floor and ceiling variables
 	TArray<FVector> Vertices;
 	TArray<int32> Triangles;
 	TArray<FVector2D> UVCoords;
@@ -54,6 +56,7 @@ public:
 
 	void ClearMap();
 
+	// Wall parameters manually added from the dimensions of the static mesh
 	UPROPERTY(EditAnywhere)
 		float WallHeight;
 	UPROPERTY(EditAnywhere)
@@ -71,7 +74,7 @@ public:
 
 	void CreateOuterWall();
 
-	FVector GetRandomPointInSquare(const FVector& UpperLeft, const FVector& LowerRight);
+	//FVector GetRandomPointInSquare(const FVector& UpperLeft, const FVector& LowerRight);
 
 protected:
 	// Called when the game starts or when spawned

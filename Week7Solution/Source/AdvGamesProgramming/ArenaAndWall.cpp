@@ -95,6 +95,7 @@ void AArenaAndWall::GenerateMap()
 
 }
 
+// Generates the ceiling by reversing the order of triangles, z is set at the wall height
 void AArenaAndWall::GenerateCeiling()
 {
 	for (int32 Y = 0; Y < Height; Y++)
@@ -136,6 +137,7 @@ void AArenaAndWall::ClearMap()
 
 }
 
+/*
 FVector AArenaAndWall::GetRandomPointInSquare(const FVector& UpperLeft, const FVector& LowerRight)
 {
 
@@ -161,6 +163,7 @@ FVector AArenaAndWall::GetRandomPointInSquare(const FVector& UpperLeft, const FV
 	return FVector(RandomX, RandomY, 1.f);
 }
 
+*/
 
 /* Function to generate the walls, contains the perlin noise calculation, random wall type selection spawn location and collsion prevention algorithm */
 void AArenaAndWall::GenerateWalls()

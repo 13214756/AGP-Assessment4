@@ -82,7 +82,7 @@ void UHealthComponent::OnTakeDamage(float Damage)
 
 void UHealthComponent::OnDeath()
 {
-	UE_LOG(LogTemp, Warning, TEXT("on death is called"));
+	//UE_LOG(LogTemp, Warning, TEXT("on death is called"));
 
 	
 	/*
